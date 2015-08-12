@@ -88,7 +88,7 @@ app.get('/masuk', function(req, res){
 app.post('/masuk', function(req, res){
     email = req.body.email;
     pass = req.body.password;
-    if(email == "gpars@pisa.com" && pass == "3991"){
+    if(email == "" && pass == ""){
       		res.redirect('admin');
     } else res.redirect('back');
 });
