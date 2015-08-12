@@ -1,0 +1,264 @@
+ <!DOCTYPE html>
+ <html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:fb="https://www.facebook.com/2008/fbml">
+    <head>
+      <title>GampangPoll</title>
+      <!--Import materialize.css-->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.0/css/materialize.min.css"/>
+      <!--Let browser know website is optimized for mobile-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+            <!--Import jQuery before materialize.js-->
+      <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+       <!-- Compiled and minified JavaScript -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.0/js/materialize.min.js"></script>
+      <script src="https://cdn.socket.io/socket.io-1.3.5.js"></script>
+      <script src="http://connect.facebook.net/en_US/all.js"></script>
+      <script>
+        $(function(){
+            var jumlahsoal = 1;
+            var jumlahJawaban = [];
+            jumlahJawaban[0] = 0;
+            jumlahJawaban[1]  = 2;
+            tambahOpsiJawaban = function(nosoal){
+
+              jumlahJawaban[nosoal]++;
+              append = '<p id="option_'+nosoal+'_'+jumlahJawaban[nosoal]+'">';
+              append += '<input name="options[]" type="text"  placeholder="jawaban" />';
+              append += '<input name="soaloption[]" type="text" value="'+nosoal+'" hidden/>';
+              append += '<a class="btn waves-effect waves-light red" style="cursor:pointer" onclick="deleteOpsiJawaban(\'option_'+nosoal+'_'+jumlahJawaban[nosoal]+'\')">Delete Opsi</a>';
+              append += '</p>';
+              $("#poll_option_"+nosoal).append(append);
+            }
+
+            tambahSoal = function(){
+              jumlahsoal++;
+              jumlahJawaban[jumlahsoal]=2;
+              append =  '<br>';
+              append += '<div id="areasoal'+jumlahsoal+'">';
+              append += '<fieldset>';
+              append += '<input name="soal[]" type="text" id="soal1" placeholder="Soal '+jumlahsoal+'" />';
+              append += '<label for="soal1"></label>';
+              append += '<div class="poll_options" id="poll_option_'+jumlahsoal+'">';
+              append += '<p id="option_'+jumlahsoal+'_1">';
+              append += '<input name="options[]" type="text"  placeholder="jawaban"  />';
+              append += '<input name="soaloption[]" type="text" value="'+jumlahsoal+'" hidden/>';
+              append += '<a class="btn waves-effect waves-light red" style="cursor:pointer" onclick="deleteOpsiJawaban(\'option_'+jumlahsoal+'_'+jumlahJawaban[jumlahsoal]+'\')">Delete Opsi</a>';
+              append += '</p>';
+              append += '<p id="option_'+jumlahsoal+'_2">';
+              append += '<input name="options[]" type="text"  placeholder="jawaban"/>';
+              append += '<input name="soaloption[]" type="text" value="'+jumlahsoal+'" hidden/>';
+              append += '<a class="btn waves-effect waves-light red" style="cursor:pointer" onclick="deleteOpsiJawaban(\'option_'+jumlahsoal+'_'+jumlahJawaban[jumlahsoal]+'\')">Delete Opsi</a>';
+              append += '</p>';
+              append += '</div>';
+              append += '<br>';
+              append += '<br>';
+              append += '<p><a class="btn waves-effect waves-light" style="cursor:pointer" onclick="tambahOpsiJawaban('+jumlahsoal+')" class="add-option">+ Tambah opsi jawaban</a></p>';
+              append += '<p><a class="btn waves-effect waves-light red" style="cursor:pointer" onclick="deleteSoal(\'areasoal'+jumlahsoal+'\')" class="add-option">- Delete Soal</a></p>';
+              append += '</fieldset>';
+              append += '</div>';
+              $("#areasoal").append(append);
+            }
+
+            deleteOpsiJawaban = function(id){
+              $("#"+id).remove();
+            }
+
+            deleteSoal = function(id){
+              $("#"+id).remove();
+            }
+        });
+      </script>
+      <script type="text/javascript">
+        $(document).ready(function() {
+          $('select').material_select();
+        });
+      </script>
+      
+    </head>
+
+    <body>
+       
+      <nav class="#4db6ac teal lighten-2">
+        <div class="nav-wrapper">
+          <a href="#" class="brand-logo left-align">&nbsp GampangPoll</a>
+          <!-- Dropdown Trigger -->
+          <div class="right-align" style="margin-right:10px;">
+            <a class='dropdown-button btn-flat white-text' href='#' data-activates='menu'><b>
+              <% if(user.local.name != null) { %>
+                    Hello, <%= user.local.name %>
+              <% } else if(user.local.name == null && user.facebook.name != null){ %>
+                  Hello, <%= user.facebook.name %>
+              <% } else if(user.local.name == null && user.facebook.name == null && user.twitter.displayName != null){ %>
+                Hello, <%= user.twitter.displayName %>
+              <% } else if(user.local.name == null && user.facebook.name == null && user.twitter.displayName == null && user.google.name != null){ %>
+                Hello, <%= user.google.name %> 
+              <% } %>
+            </b></a>
+          </div>
+          <!-- Dropdown Structure -->
+          <ul id='menu' class='dropdown-content'>
+            <li><a href="/profile"><b>Profile</b></a></li>
+            <li><a href="/dashboard"><b>Dashboard</b></a></li>
+            <li><a href="/mypolling"><b>My Polling</b></a></li>
+            <li><a href="/logout" class="#f44336 red-text"><b>Sign Out</b></a></li>
+          </ul>
+        </div>
+      </nav>
+          
+      </br>
+        
+      <div class="container col s10">
+          
+            <form action="/dashboard/create" method="POST">
+                  <p>
+                    <label for="title">Event</label>
+                    <input name="title" type="text" id="title" />
+                    <input name="event" type="text" id="even" hidden/>
+                  </p>
+                  <br/>
+                      <div id="areasoal">     
+                          <div id="areasoal1">
+                            <fieldset>
+                            <input name="soal[]" type="text" id="soal1" placeholder="Soal 1" />
+                            <label for="soal1"></label>
+                          
+                            <div class="poll_options col s5 right-align" id="poll_option_1">
+                              <p id="option_1_1">
+                                <input name="options[]"type="text" placeholder="jawaban" />
+                                <input name="soaloption[]" type="text" value="1" hidden/>
+                                <a class="btn waves-effect waves-light red" style="cursor:pointer" onclick="deleteOpsiJawaban('option_1_1')">Delete Opsi</a>
+                              </p>
+                              <p id="option_1_2">
+                                <input name="options[]" type="text"  placeholder="jawaban" />
+                                <input name="soaloption[]" type="text" value="1" hidden/>
+                                <a class="btn waves-effect waves-light red" style="cursor:pointer" onclick="deleteOpsiJawaban('option_1_2')">Delete Opsi</a>
+                              </p>
+                            </div>
+                            <br>
+                            <p><a class="btn waves-effect waves-light" style="cursor:pointer" onclick="tambahOpsiJawaban(1)" class="add-option">+ Tambah opsi jawaban</a></p>
+                            <p><a class="btn waves-effect waves-light red" style="cursor:pointer" onclick="deleteSoal('areasoal1')" class="add-option">- Delete Soal</a></p>
+                            </fieldset>
+                          </div>
+                      </div>
+
+                      <br/>
+                      <p class="right-align"><a class="btn-floating btn-large waves-effect waves-light blue" style="cursor:pointer" onclick="tambahSoal()"><i class="mdi-content-add"></i>Soal</a></p>
+                      <br/>
+                      <fieldset>
+                        <table>
+                        <p>Jenis Pertanyaan?</p>
+                        <p>
+                          <input name="jenisopsi" type="radio" id="jenisop1" value="1"/>
+                          <label for="jenisop1">Single Choice</label>
+                        </p>
+                        <p>
+                          <input name="jenisopsi" type="radio" id="jenisop2" value="2"/>
+                          <label for="jenisop2">Multiple Choice</label>
+                        </p>
+                        </table>
+                      </fieldset>
+                      <br/>
+                      <!--<fieldset>
+                        <p>Jenis Polling?</p>
+                        <p>
+                          <input name="jenispolling" type="radio" id="jenispoll1" value="1" onclick="closeinvite()" />
+                          <label for="jenispoll1">Terbuka</label>
+                        </p>
+                        <p>
+                          <input name="jenispolling" type="radio" id="jenispoll2" onclick="invitevia()" value="2"/>
+                          <label for="jenispoll2">Tertutup</label>
+                        </p>
+                      </fieldset><br/>
+                      <div id="invite">
+                      </div><br>
+                      <div id="inv"></div>-->
+                      <fieldset>
+                        <p>Tampilkan chart dalam bentuk?</p>
+                        <p>
+                          <input name="chart" type="radio" id="c1" value="1"/>
+                          <label for="c1">Bar</label>
+                        </p>
+                        <p>
+                          <input name="chart" type="radio" id="c2" value="2"/>
+                          <label for="c2">Column</label>
+                        </p>
+                        <p>
+                          <input name="chart" type="radio" id="c3" value="3"/>
+                          <label for="c3">Pie Chart</label>
+                        </p>
+                      </fieldset><br/>
+                      <fieldset>
+                        <p>Set Timer (min 5 detik max 10 detik)</p>
+                        <p class="range-field">
+                          <input type="range" name="timer" min="5" max="10" />
+                        </p>
+                      </fieldset>
+                      
+                      <br>
+                      <button type="submit" onclick="kirimdata()" class="btn waves-effect waves-light">Create My Poll</button>
+                      <br/>
+                    </div>
+            </form>
+
+      </div>
+      <br/>
+      <script type="text/javascript">
+        var server = "http://opensource.petra.ac.id:11010";
+        var socket = io.connect(server);
+        $(function(){
+          
+          kirimdata = function(event){
+            var isi = $("#title").val();
+            //alert("isi "+isi);
+            isi = isi.replace(/\s+/g, '');
+            //alert("isi baru "+isi);
+            
+            socket.emit('new event', isi);
+            
+          }
+
+          
+          invitevia = function(){
+        
+            a = '<br>';
+            a += '<fieldset id="femail">';
+            a += '<p>Invite via ?</p>';
+            a += '<input type="radio" id="email" name="invite" onclick="viaemail()"></input>';
+            a += '<label for="email">Email</label><br>';
+            a += '<input type="radio" id="fb" name="invite" onclick="viafb()"></input>';
+            a += '<label for="fb">Facebook</label>';
+            a += '</fieldset>';
+            $('#invite').append(a);
+          }
+          
+          closeinvite = function(){
+            $('#invite').html("");
+          }
+
+          viaemail = function(){
+            $('#inv').html("");
+            b = '<br>';
+            b += '<fieldset>';
+            b += '<input type="text" id="myEmail" name="invbyemail" placeholder="input partisipan\'s email here, separate by comma">';
+            b += '</fieldset>';
+            b += '<br>';
+            $('#inv').append(b);
+          } 
+
+          viafb = function(){
+            
+            $('#inv').html("");
+            f = '<div id="fb-root"></div>';
+            f += '<p>';
+            f += '<input type="button" onclick="sendRequestViaMultiFriendSelector(); return false;" value="Send Request To Your Facebook Friends"/>';
+            f += '</p>';
+            f += '<br>';
+            $('#inv').html(f);
+          }
+          
+        });
+        
+      </script>
+
+    </body>
+  </html>

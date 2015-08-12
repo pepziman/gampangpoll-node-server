@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+<head>
+    <title>Profile</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <!--Import materialize.css-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.0/css/materialize.min.css">
+    <style>
+        body        { padding-top:80px; word-wrap:break-word; }
+    </style>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <!--Import materialize.css-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.0/js/materialize.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+          $('select').material_select();
+        });
+    </script>
+</head>
+<body>
+<style type="text/css">
+    body{
+        padding-top: 0px;
+    }
+</style>
+<nav class="#4db6ac teal lighten-2">
+    <div class="nav-wrapper">
+      <a href="#" class="brand-logo left-align">&nbsp GampangPoll</a>
+      <!-- Dropdown Trigger -->
+      <div class="right-align" style="margin-right:10px;">
+        <a class='dropdown-button btn-flat white-text' href='#' data-activates='menu'><b>
+              <% if(user.local.name != null) { %>
+                    Hello, <%= user.local.name %>
+              <% } else if(user.local.name == null && user.facebook.name != null){ %>
+                  Hello, <%= user.facebook.name %>
+              <% } else if(user.local.name == null && user.facebook.name == null && user.twitter.displayName != null){ %>
+                Hello, <%= user.twitter.displayName %>
+              <% } else if(user.local.name == null && user.facebook.name == null && user.twitter.displayName == null && user.google.name != null){ %>
+                Hello, <%= user.google.name %> 
+              <% } %>
+            </b></a>
+      </div>
+      <!-- Dropdown Structure -->
+      <ul id='menu' class='dropdown-content'>
+        <li><a href="/profile"><b>Profile</b></a></li>
+        <li><a href="/dashboard"><b>Dashboard</b></a></li>
+        <li><a href="/mypolling"><b>My Polling</b></a></li>
+        <li><a href="/jawab"><b>Vote Polling</b></a></li>
+        <li><a href="/logout" class="#f44336 red-text"><b>Sign Out</b></a></li>
+      </ul>
+    </div>
+</nav>
+<div class="container">
+    <br>
+    <div class="row">
+        <!-- LOCAL INFORMATION -->
+        <div class="col-sm-6">
+            <div class="well">
+                <h3><span class="fa fa-user"></span> Local</h3>
+
+                <% if (user.local.email) { %>
+                    <p>
+                        <strong>id</strong>: <%= user._id %><br>
+                        <strong>email</strong>: <%= user.local.email %><br>
+                        <strong>password</strong>: <%= user.local.password %>
+                    </p>
+                    
+                    <a href="/unlink/local" class="btn btn-default">Unlink</a>
+                <% } else { %>
+                    <a href="/connect/local" class="btn btn-default">Connect Local</a>
+                <% } %>
+
+            </div>
+        </div>
+
+        <!-- FACEBOOK INFORMATION -->
+        <div class="col-sm-6">
+            <div class="well">
+                <h3 class="text-primary"><span class="fa fa-facebook"></span> Facebook</h3>
+
+                <!-- check if the user has this token (is the user authenticated with this social account) -->
+                <% if (user.facebook.token) { %>
+                    <p>
+                        <strong>id</strong>: <%= user.facebook.id %><br>
+                        <strong>token</strong>: <%= user.facebook.token %><br>
+                        <strong>email</strong>: <%= user.facebook.email %><br>
+                        <strong>name</strong>: <%= user.facebook.name %><br>
+                    </p>
+
+                    <a href="/unlink/facebook" class="btn btn-primary">Unlink</a>
+                <% } else { %>
+                    <a href="/connect/facebook" class="btn btn-primary">Connect Facebook</a>
+                <% } %>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
+
+        <!-- TWITTER INFORMATION -->
+        <div class="col-sm-6">
+            <div class="well">
+                <h3 class="text-info"><span class="fa fa-twitter"></span> Twitter</h3>
+
+                <% if (user.twitter.token) { %>
+                    <p>
+                        <strong>id</strong>: <%= user.twitter.id %><br>
+                        <strong>token</strong>: <%= user.twitter.token %><br>
+                        <strong>display name</strong>: <%= user.twitter.displayName %><br>
+                        <strong>username</strong>: <%= user.twitter.username %>
+                    </p>
+
+                    <a href="/unlink/twitter" class="btn btn-info">Unlink</a>
+                <% } else { %>
+                    <a href="/connect/twitter" class="btn btn-info">Connect Twitter</a>
+                <% } %>
+
+            </div>
+        </div>
+
+        <!-- GOOGLE INFORMATION -->
+        <div class="col-sm-6">
+            <div class="well">
+                <h3 class="text-danger"><span class="fa fa-google-plus"></span> Google+</h3>
+
+                <% if (user.google.token) { %>
+                    <p>
+                        <strong>id</strong>: <%= user.google.id %><br>
+                        <strong>token</strong>: <%= user.google.token %><br>
+                        <strong>email</strong>: <%= user.google.email %><br>
+                        <strong>name</strong>: <%= user.google.name %>
+                    </p>
+
+                    <a href="/unlink/google" class="btn btn-danger">Unlink</a>
+                <% } else { %>
+                    <a href="/connect/google" class="btn btn-danger">Connect Google</a>
+                <% } %>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

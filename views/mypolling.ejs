@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<!--Import materialize.css-->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.0/css/materialize.min.css">          
+      
+      <!--Let browser know website is optimized for mobile-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"/>
+      <!--Import jQuery before materialize.js-->
+      <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+      <!-- Compiled and minified JavaScript -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.0/js/materialize.min.js"></script>
+      <script src="https://cdn.socket.io/socket.io-1.3.5.js"></script>
+      <script type="text/javascript">
+        var server = "http://opensource.petra.ac.id:11010";
+        var socket = io.connect(server);
+        socket.on('coba',function(text){
+        	alert(text)
+        });
+
+        startpoll = function(id){
+          alert("polling dimulai");
+          document.location.href='/operator/'+id;
+          //
+        }
+      </script>
+</head>
+<body>
+	<nav class="#4db6ac teal lighten-2">
+        <div class="nav-wrapper">
+          <a href="#" class="brand-logo">&nbsp GampangPoll</a>
+          <!-- Dropdown Trigger -->
+          <div class="right-align" style="margin-right:10px;">
+            <a class='dropdown-button btn-flat white-text' href='#' data-activates='menu'><b>
+               <% if(user.local.name != null) { %>
+                    Hello, <%= user.local.name %>
+              <% } else if(user.local.name == null && user.facebook.name != null){ %>
+                  Hello, <%= user.facebook.name %>
+              <% } else if(user.local.name == null && user.facebook.name == null && user.twitter.displayName != null){ %>
+                Hello, <%= user.twitter.displayName %>
+              <% } else if(user.local.name == null && user.facebook.name == null && user.twitter.displayName == null && user.google.name != null){ %>
+                Hello, <%= user.google.name %> 
+              <% } %>
+            </b></a>
+          </div>
+          <!-- Dropdown Structure -->
+          <ul id='menu' class='dropdown-content'>
+            <li><a href="/profile"><b>Profile</b></a></li>
+            <li><a href="/dashboard"><b>Dashboard</b></a></li>
+            <li><a href="/mypolling"><b>My Polling</b></a></li>
+            <!--<li><a href="/jawab"><b>Vote Polling</b></a></li>-->
+            <li><a href="/logout" class="#f44336 red-text"><b>Sign Out</b></a></li>
+          </ul>
+        </div>
+      </nav>
+
+	<table>
+	    <thead>
+	      <tr>
+	          <th poll-field="name">Nama Polling</th>
+	          <th poll-field="menu" style="">Menu</th>
+	      </tr>
+	    </thead>
+
+	    <tbody>
+
+	        <% for(i=0; i<poll.length; i++) { %>
+
+	      <tr>
+	        <td style="vertical-align:top"><b><%= poll[i].title %></b></td>
+          <td style="vertical-align:top"><a class='dropdown-button btn' href='#' data-activates='poll'><b>Polling Menu</b></a></td>
+          <!-- Dropdown Structure -->
+          <ul id='poll' class='dropdown-content'>
+            <li><a href="/mypolling/open/<%= poll[i]._id %>"><b>Open Polling</b></a></li>
+            <li><a href="/mypolling/<%= poll[i]._id %>"><b>View</b></a></li>
+            <li><a href="/mypolling/edit/<%= poll[i]._id %>"><b>Edit</b></a></li>
+            <li><a class="red-text" onclick="deletepoll('<%= poll[i]._id %>')"><b>Delete</b></a></li>
+          </ul>
+	        <!--<td style="vertical-align:top"><a class="waves-effect waves-light btn" href="/mypolling/open/<%= poll[i]._id %>">Open Polling</a><br><br>
+          <a href="/mypolling/<%= poll[i]._id %>" class="btn">View</a><br><br>
+	        <a href="/mypolling/edit/<%= poll[i]._id %>" class="btn">Edit</a><br><br>
+	        <a href="/mypolling/delete/<%= poll[i]._id %>" class="btn #f44336 red" style="margin-right:10px;">Delete</a>
+	        </td>-->
+	      </tr>
+	        <% } %>
+
+	    </tbody>
+	  </table>
+    <script type="text/javascript">
+      $(function(){
+        deletepoll = function(id){
+          if (confirm("are you sure you want to delete this polling ?")) {
+              document.location.href='/mypolling/delete/'+id;
+          } 
+        }
+      });
+    </script>
+</body>
+</html>

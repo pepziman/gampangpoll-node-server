@@ -1,0 +1,95 @@
+ <!DOCTYPE html>
+  <html>
+    <head>
+      <!--Import materialize.css-->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.0/css/materialize.min.css">          
+      
+      <!--Let browser know website is optimized for mobile-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    </head>
+
+    <body>
+       
+       <nav class="#4db6ac teal lighten-2">
+        <div class="nav-wrapper">
+          <a href="#" class="brand-logo">&nbsp GampangPoll</a>
+          <!-- Dropdown Trigger -->
+          <div class="right-align" style="margin-right:10px;">
+            <a class='dropdown-button btn-flat white-text' href='#' data-activates='menu'><b>Menu Utama</b></a>
+          </div>
+          <!-- Dropdown Structure -->
+          <ul id='menu' class='dropdown-content'>
+            <li><a href="/profile"><b>Profile</b></a></li>
+            <li><a href="/dashboard"><b>Dashboard</b></a></li>
+            <li><a href="/mypolling"><b>My Polling</b></a></li>
+            <li><a href="/logout" class="#f44336 red-text"><b>Sign Out</b></a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="row">
+        </br>
+        
+        <div class="col s8 center-align">
+           
+            <form action="/tambahsoal" method="POST" id="create_poll">
+              <fieldset>
+                <input name="soal[]" type="text" id="soal1" placeholder="Soal 1" />
+                <label for="soal1"></label>
+                  
+                  
+                  <div class="poll_options">
+                    <p>
+                      <input name="options[]" type="text" id="option1_1" placeholder="jawaban 1" />
+                      
+                      <label for="option1"></label>
+                    </p>
+                    <p>
+                      <input name="options[]" type="text" id="option1_2" placeholder="jawaban 2"/>
+                      <label for="option2"></label>
+                    </p>
+                    
+                    <p><a href="#" class="add-option">+ Tambah opsi jawaban</a></p>
+                    <p><a href="#" class="add-soal">+ Tambah Soal</a></p>
+                    
+                  </div>
+                  <button type="submit" class="btn waves-effect waves-light">Create My Poll</button>
+                </div>
+              </fieldset>
+            </form>
+
+          
+        </div>
+
+
+        
+
+
+      </div>
+      <!--Import jQuery before materialize.js-->
+      <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+       <!-- Compiled and minified JavaScript -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.0/js/materialize.min.js"></script>
+      <script type="text/javascript">
+      $(function(){
+        jumlah_soal = 1;
+
+
+        $('.add-option').click(function(e){
+          e.preventDefault();
+          var opt_length = $('.poll_options input[type=text]').length + 1;
+          var option = $('.poll_options input[type=text]:last').parent().clone();
+          var option_num = parseInt(option.children('label').text().split(' ')[1]) + 1;
+          option.children('input').attr('value','').attr('id','option'+option_num).after('<a href="#" class="remove">close</a>').siblings('label').text('Option ' + option_num).attr('for','option'+option_num);
+          $(this).parent().before(option);
+        });
+        $('a.remove').live("click", function(e){
+          e.preventDefault();
+          $(this).parent().slideUp(function(){
+            $(this).remove();
+          });
+        });
+      });
+    </script>
+    </body>
+  </html>
