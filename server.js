@@ -56,10 +56,10 @@ app.use(flash()); // use connect-flash for flash messages stored in session
 
 //==================== NODEMAILER =============================
 var transporter = nodemailer.createTransport({
-    service: 'Gmail',
+    service: '',
     auth: {
-        user: 'albert.leo93@gmail.com',
-        pass: 'wongpinter'
+        user: '',
+        pass: ''
     }
 });
 
@@ -498,7 +498,7 @@ app.post('/dashboard/create', isLoggedIn, function(req, res){
     if(req.body.invbyemail){
       
       var mailOptions = {
-          from: '<albert.leo93@gmail.com>', // sender address
+          from: '<>', // sender address
           to: req.body.invbyemail, // list of receivers
           subject: 'GampangPoll Invitation', // Subject line
           text: 'Selamat Anda telah diundang oleh '+req.user.name+', silahkan copy id polling berikut : '+s_id, // plaintext body
