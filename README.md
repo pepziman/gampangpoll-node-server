@@ -6,8 +6,11 @@ built using expressjs as core framework, and socket.io as a core communication f
 i am using ejs as a template engine instead jade, this application is still under active development.
 
 For Web interface, i'm using:
-- materializecss
+- EJS
+- Materializecss
 - revealjs
+- jQuery
+- Javascript
 
 if you are interested in my application and want to use it, its ok just ask for my permission before and put my name on your credit.
 
